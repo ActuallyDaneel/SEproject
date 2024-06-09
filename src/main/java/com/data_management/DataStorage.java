@@ -1,10 +1,10 @@
 package com.data_management;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 import com.alerts.AlertProcessor;
+
+import javax.xml.crypto.Data;
 
 /**
  * Manages storage and retrieval of patient data within a healthcare monitoring
@@ -19,9 +19,21 @@ public class DataStorage {
      * Constructs a new instance of DataStorage, initializing the underlying storage
      * structure.
      */
-    public DataStorage() {
-        this.patientMap = new HashMap<>();
+
+    private static DataStorage instance;
+
+    private DataStorage() {
+        {
+            this.patientMap = new HashMap<>();
+    }}
+
+    public static DataStorage getInstance() {
+        if (instance == null) {
+            instance = new DataStorage();
+        }
+        return instance;
     }
+
 
     /**
      * Adds or updates patient data in the storage.
@@ -37,10 +49,10 @@ public class DataStorage {
      *                         milliseconds since the Unix epoch
      */
     public void addPatientData(int patientId, double measurementValue, String recordType, long timestamp) {
-        Patient patient = patientMap.get(patientId);
+        Patient patient = patientMap.get(Optional.of(patientId));
         if (patient == null) {
             patient = new Patient(patientId);
-            patientMap.put(patientId, patient);
+            patientMap.put(Integer.valueOf(patientId), patient);
         }
         patient.addRecord(measurementValue, recordType, timestamp);
     }
@@ -61,7 +73,7 @@ public class DataStorage {
     public List<PatientRecord> getRecords(int patientId, long startTime, long endTime) {
 
         try {
-            Patient patient = patientMap.get(patientId);
+            Patient patient = patientMap.get(Optional.of(patientId));
             return patient.getRecords(startTime, endTime);
         } catch (NullPointerException e) {}
 
@@ -94,7 +106,7 @@ public class DataStorage {
     public static void main(String[] args) {
         // DataReader is not defined in this scope, should be initialized appropriately.
         // DataReader reader = new SomeDataReaderImplementation("path/to/data");
-        DataStorage storage = new DataStorage();
+        DataStorage storage = DataStorage.getInstance();
 
         // Assuming the reader has been properly initialized and can read data into the
         // storage

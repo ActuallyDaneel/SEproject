@@ -5,6 +5,8 @@ import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -52,7 +54,11 @@ public class FileOutputStrategy implements OutputStrategy {
         try (PrintWriter out = new PrintWriter(
                 Files.newBufferedWriter(Paths.get(filePath), StandardOpenOption.CREATE, StandardOpenOption.APPEND))) {
             // Write patient ID, timestamp, label, and data to the file
-            out.printf("Patient ID: %d, Timestamp: %d, Label: %s, Data: %s%n", patientId, timestamp, label, data);
+            out.printf(String.format("%s,%s,%s,%s",
+                    Objects.toString(Optional.of(patientId), ""),
+                    Objects.toString(Optional.of(timestamp), ""),
+                    Objects.toString(label, ""),
+                    Objects.toString(data, "")));
         } catch (Exception e) {
             System.err.println("Error writing to file " + filePath + ": " + e.getMessage());
         }

@@ -1,7 +1,7 @@
 package com.alerts;
 
 // Represents an alert
-public class Alert implements AlertInterface {
+public class Alert {
     private String patientId;
     private String condition;
     private long timestamp;
@@ -22,5 +22,14 @@ public class Alert implements AlertInterface {
 
     public long getTimestamp() {
         return timestamp;
+    }
+
+    @Override
+    public String toString() {
+        return "Alert [patientId=" + patientId + ", condition=" + condition + ", timestamp=" + timestamp + "]";
+    }
+
+    public void checkAlert() {
+
     }
 }

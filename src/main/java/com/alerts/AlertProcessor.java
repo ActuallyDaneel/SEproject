@@ -46,6 +46,9 @@ public class AlertProcessor {
      * alert will be triggered.
      */
     public void evaluateData() {
+        AlertFactory bpFactory = new BloodPressureAlertFactory();
+        AlertFactory boFactory = new BloodOxygenAlertFactory();
+        AlertFactory ecgFactory = new ECGAlertFactory();
         try {
 
             List<Patient> patients = dataStorage.getAllPatients();
@@ -71,20 +74,20 @@ public class AlertProcessor {
                                     triggerAlert(alert);
                                 }
                                 if (checkAlertConditionINCorDECTREND(record)) {
-                                    Alert alert = new Alert(String.valueOf(patientId), "Increasing or Decreasing trend in blood pressure found", record.getTimestamp());
-                                    triggerAlert(alert);
+                                    Alert alert = bpFactory.createAlert(String.valueOf(patientId), "Blood Pressure Alert", System.currentTimeMillis());
+                                    System.out.println(alert);
                                 }
                                 if (checkAlertConditionSaturationDROP(record)) {
                                     Alert alert = new Alert(String.valueOf(patientId), "Rapid Saturation Drop detected", record.getTimestamp());
-                                    triggerAlert(alert);
+                                    System.out.println(alert);
                                 }
                                 if (checkAlertConditionHypotensiveHypoxemiaAlert(record)) {
-                                    Alert alert = new Alert(String.valueOf(patientId), "Hypotensive Hypoxemia detected", record.getTimestamp());
-                                    triggerAlert(alert);
+                                    Alert alert = boFactory.createAlert(String.valueOf(patientId), "Oxygen Alert", System.currentTimeMillis());
+                                    System.out.println(alert);
                                 }
                                 if (checkAlertConditionIRREGULARHEARTBEAT(record)) {
-                                    Alert alert = new Alert(String.valueOf(patientId), "Irregular heart beat detected", record.getTimestamp());
-                                    triggerAlert(alert);
+                                    Alert alert = ecgFactory.createAlert(String.valueOf(patientId), "ECG Alert", System.currentTimeMillis());
+                                    System.out.println(alert);
                                 }
                             } else {
                                 logger.warning("Null record found for patient ID: " + patientId);
@@ -393,7 +396,7 @@ public class AlertProcessor {
     private List<Double> getLatestHeartBeats(List<PatientRecord> records) {
         List<Double> heartbeats = new ArrayList<>();
         for (PatientRecord record : records) {
-            heartbeats.add(record.getMeasurementValue());
+            heartbeats.add(Double.valueOf(record.getMeasurementValue()));
         }
         return heartbeats;
     }

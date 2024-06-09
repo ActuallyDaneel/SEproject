@@ -3,6 +3,8 @@ package com.cardio_generator.outputs;
 import org.java_websocket.WebSocket;
 import org.java_websocket.server.WebSocketServer;
 import java.net.InetSocketAddress;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -42,7 +44,11 @@ public class WebSocketOutputStrategy implements OutputStrategy {
     @Override
     public void output(int patientId, long timestamp, String label, String data) {
         // Format the incoming data messages
-        String message = String.format("%d,%d,%s,%s", patientId, timestamp, label, data);
+        String message = String.format("%s,%s,%s,%s",
+                Objects.toString(Optional.of(patientId), ""),
+                Objects.toString(Optional.of(timestamp), ""),
+                Objects.toString(label, ""),
+                Objects.toString(data, ""));
         // Ensure all necessary patient information is included
         sendData(message);
     }

@@ -40,6 +40,18 @@ public class HealthDataSimulator {
 
     private DataStorage storage;
     private ActiveAlerts activeAlerts;
+    private static HealthDataSimulator instance;
+
+    private HealthDataSimulator() {
+
+    }
+
+    public static HealthDataSimulator getInstance() {
+        if (instance == null) {
+            instance = new HealthDataSimulator();
+        }
+        return instance;
+    }
 
     /**
      * Main method to start the health data simulation.
@@ -54,7 +66,7 @@ public class HealthDataSimulator {
         simulator.startSimulation();
     }
     public void startSimulation() {
-        storage = new DataStorage();
+        storage = DataStorage.getInstance();
 
         scheduler = Executors.newScheduledThreadPool(patientCount * 4);
 
@@ -157,7 +169,7 @@ public class HealthDataSimulator {
     private static List<Integer> initializePatientIds(int patientCount) {
         List<Integer> patientIds = new ArrayList<>();
         for (int i = 1; i <= patientCount; i++) {
-            patientIds.add(i);
+            patientIds.add(Integer.valueOf(i));
         }
         return patientIds;
     }
